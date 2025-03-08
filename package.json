@@ -1,0 +1,16 @@
+{
+  "name": "carl-landing-page",
+  "version": "1.0.0",
+  "description": "Landing page for CARL the Crypto Alien",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+} 

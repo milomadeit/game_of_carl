@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet CARL: The Crypto Alien</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="headline">I AM CARL, HELLO!</h1>
+                <p class="subheading">Submit your <span class="highlight">Hyperliquid EVM wallet</span></p>
+            </div>
+            
+            <!-- Move these sections inside hero -->
+            <section class="unlock-section">
+                <div class="alien-glyph" id="alienGlyph">
+                    <!-- Glyph will be styled with CSS -->
+                </div>
+            </section>
+
+            <section class="form-section hidden" id="formSection">
+                <form id="walletForm">
+                    <div class="form-group">
+                        <input type="text" id="walletAddress" placeholder="Paste your Hyperliquid EVM wallet here" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="twitterLink" placeholder="Link your Twitter (e.g., twitter.com/username)">
+                    </div>
+                    <button type="submit" class="submit-btn">JOIN CARL</button>
+                </form>
+            </section>
+            
+            <div class="carl-sprite" id="carlSprite"></div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html> 

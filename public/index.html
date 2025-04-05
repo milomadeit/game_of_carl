@@ -11,26 +11,23 @@
     <main>
         <!-- Hero Section -->
         <section class="hero">
-            <div class="hero-overlay"></div>
+            <div class="carl-sprite"></div>
             <div class="hero-content">
                 <h1 class="headline">I AM CARL, HELLO!</h1>
                 <p class="subheading">Submit your <span class="highlight">HyperEVM</span> wallet</p>
-                
-                <!-- Form is now directly in the hero-content -->
-                <section class="form-section" id="formSection">
-                    <form id="walletForm">
-                        <div class="form-group">
-                            <input type="text" id="walletAddress" placeholder="Paste your HyperEVM wallet here" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="twitterLink" placeholder="Link your Twitter (e.g., twitter.com/username)">
-                        </div>
-                        <button type="submit" class="submit-btn">JOIN CARL</button>
-                    </form>
-                </section>
             </div>
             
-            <div class="carl-sprite" id="carlSprite"></div>
+            <div class="form-container">
+                <form id="walletForm" class="compact-form">
+                    <div class="form-group">
+                        <input type="text" id="walletAddress" placeholder="HyperEVM wallet" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="twitterLink" placeholder="Twitter username">
+                    </div>
+                    <button type="submit" class="submit-btn">JOIN CARL</button>
+                </form>
+            </div>
         </section>
     </main>
     <script src="script.js"></script>

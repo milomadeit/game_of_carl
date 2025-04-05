@@ -107,9 +107,7 @@ body {
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
-    .hero {
-        background-image: url('./images/carl_landing.png');
-    }
+
 
     .headline {
         font-size: 1.75rem;

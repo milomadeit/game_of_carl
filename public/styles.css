@@ -56,7 +56,10 @@ body, html {
 }
 
 .subheading {
+    font-family: 'Roboto', sans-serif;
     font-size: 1.2rem;
+    color: var(--white);
+    margin-top: 1rem;
     opacity: 0;
     animation: slideUp 1s forwards 0.5s;
     line-height: 1.5;
@@ -178,4 +181,29 @@ body, html {
 /* Remove .hidden class from form-section */
 .form-section.hidden {
     display: none;
+}
+
+.twitter-connect-btn {
+    width: 100%;
+    padding: 12px;
+    background: #1DA1F2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.3s ease;
+}
+
+.twitter-connect-btn:hover {
+    background: #1a8cd8;
+}
+
+.twitter-logo {
+    width: 20px;
+    height: 20px;
 } 

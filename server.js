@@ -6,9 +6,22 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
+const { google } = require('googleapis');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize Google Sheets API
+const auth = new google.auth.GoogleAuth({
+    credentials: {
+        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    },
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+});
+
+const sheets = google.sheets({ version: 'v4', auth });
+const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_ID;
 
 // Rate limiting
 const limiter = rateLimit({
@@ -32,6 +45,23 @@ app.use(limiter); // Apply rate limiting to all routes
 // Request validation middleware
 const validateTwitterToken = [
     body('code').isString().trim().notEmpty(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        next();
+    }
+];
+
+const validateWalletSubmission = [
+    body('walletAddress')
+        .isString()
+        .trim()
+        .notEmpty()
+        .matches(/^0x[a-fA-F0-9]{40}$/)
+        .withMessage('Invalid EVM wallet address format'),
+    body('twitterAccessToken').isString().trim().notEmpty(),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -84,10 +114,64 @@ app.post('/api/twitter/token', validateTwitterToken, async (req, res) => {
             throw new Error(data.error_description || 'Failed to exchange token');
         }
 
-        res.json(data);
+        // Get user info from Twitter
+        const userResponse = await fetch('https://api.twitter.com/2/users/me', {
+            headers: {
+                'Authorization': `Bearer ${data.access_token}`
+            }
+        });
+        const userData = await userResponse.json();
+
+        res.json({
+            ...data,
+            twitterId: userData.data.id,
+            twitterUsername: userData.data.username
+        });
     } catch (error) {
         console.error('Error exchanging token:', error);
         res.status(500).json({ error: 'Failed to exchange token' });
+    }
+});
+
+// Save wallet and Twitter info to Google Sheets
+app.post('/api/submit', validateWalletSubmission, async (req, res) => {
+    const { walletAddress, twitterAccessToken, twitterId, twitterUsername } = req.body;
+    const timestamp = new Date().toISOString();
+
+    try {
+        // Check if wallet address already exists
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Sheet1!A:A',
+        });
+
+        const rows = response.data.values || [];
+        const existingWallet = rows.find(row => row[0] === walletAddress);
+        
+        if (existingWallet) {
+            return res.status(400).json({ error: 'Wallet address already registered' });
+        }
+
+        // Add new row to Google Sheet
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Sheet1!A:E',
+            valueInputOption: 'USER_ENTERED',
+            resource: {
+                values: [[
+                    walletAddress,
+                    twitterId,
+                    twitterUsername,
+                    timestamp,
+                    'Connected'
+                ]],
+            },
+        });
+
+        res.json({ message: 'Successfully registered!' });
+    } catch (error) {
+        console.error('Error saving to Google Sheets:', error);
+        res.status(500).json({ error: 'Failed to save user data' });
     }
 });
 
